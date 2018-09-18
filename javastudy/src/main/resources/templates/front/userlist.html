@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<link
+	href="resources/bower_components/bootstrap/dist/css/bootstrap.min.css"
+	rel="stylesheet" type="text/css" />
+<meta charset="UTF-8" />
+<title>Insert title here</title>
+<style type="text/css">
+.box-content {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowarp;
+}
+</style>
+</head>
+<body>
+	<div class="container-fluid  ">
+		<div class="row">
+			<div class="col-md-12" style="padding: 0px">
+		<!-- 这是导航栏部分 -->
+				<!-- <div class="row"> -->
+				<div class="col-md-12" style="padding: 0PX">
+					<nav class="navbar navbar-expand-lg navbar-light bg-light">
+						<button class="navbar-toggler" type="button"
+							data-toggle="collapse"
+							data-target="#bs-example-navbar-collapse-1">
+							<span class="navbar-toggler-icon"></span>
+						</button>
+						<a class="navbar-brand" href="#">Brand</a>
+						<div class="collapse navbar-collapse"
+							id="bs-example-navbar-collapse-1">
+							<ul class="navbar-nav">
+								<li class="nav-item active"><a class="nav-link" href="#">Link
+										<span class="sr-only">(current)</span>
+								</a></li>
+								<li class="nav-item"><a class="nav-link" href="#">Link</a>
+								</li>
+								<li class="nav-item dropdown"><a
+									class="nav-link dropdown-toggle" href="http://example.com"
+									id="navbarDropdownMenuLink" data-toggle="dropdown">Dropdown
+										link</a>
+									<div class="dropdown-menu"
+										aria-labelledby="navbarDropdownMenuLink">
+										<a class="dropdown-item" href="#">Action</a> <a
+											class="dropdown-item" href="#">Another action</a> <a
+											class="dropdown-item" href="#">Something else here</a>
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item" href="#">Separated link</a>
+									</div></li>
+							</ul>
+							<form class="form-inline">
+								<input class="form-control mr-sm-2" type="text" />
+								<button class="btn btn-primary my-2 my-sm-0" type="submit">
+									Search</button>
+							</form>
+							<ul class="navbar-nav ml-md-auto">
+								<li class="nav-item active"><a class="nav-link" href="#">Link
+										<span class="sr-only">(current)</span>
+								</a></li>
+								<li class="nav-item dropdown"><a
+									class="nav-link dropdown-toggle" href="http://example.com"
+									id="navbarDropdownMenuLink" data-toggle="dropdown">**用户</a>
+									<div class="dropdown-menu dropdown-menu-right"
+										aria-labelledby="navbarDropdownMenuLink">
+										<a class="dropdown-item" href="#">我的笔记</a> <a
+											class="dropdown-item" href="#">我的视频</a>
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item" href="#">我的资料</a>
+									</div></li>
+							</ul>
+						</div>
+					</nav>
+					<!-- </div> -->
+				</div>
+				<!--导航栏部分结束  -->
+				
+				
+				<div class="row m-3"><!--  style="border: 1px solid black" -->
+				<!-- 左侧菜单栏部分 -->
+					<div class="col-md-2">
+						<div class="list-group">
+							<div class="alert alert-secondary" role="alert"
+								style="margin-bottom: 0px">与我相关</div>
+							<div class="list-group-item">我的笔记</div>
+							<div class="list-group-item">我的视频</div>
+							<div class="list-group-item justify-content-between">我的文章</div>
+							<div class="list-group-item justify-content-between">我的资料</div>
+							<div class="list-group-item justify-content-between">.....</div>
+							<div class="list-group-item justify-content-between">.....</div>
+							<div class="list-group-item justify-content-between">.....</div>
+							<!-- <a href="#"
+								class="list-group-item list-group-item-action active justify-content-between">Home
+								<span class="badge badge-light badge-pill">14</span>
+							</a> -->
+						</div>
+					</div>
+					<!-- 结束 -->
+					<!-- 中间内容显示部分 -->
+					<div class="col-md-10"
+						id="notelist">
+						<div class="alert alert-secondary" style="margin-bottom: 0px">
+							<span>我的笔记</span>
+						</div>
+						<div ><!-- style="border-bottom:1px solid black; -->
+							<div v-for="note in notes.content"
+								class="container-fluid  bg-light m-1 border-bottom">
+								<div class="container-fluid">
+									<p style="margin-bottom: 0px">
+										<u style="margin-right: 20px"><a href="#">{{note.name}}</a></u>{{note.pubdate|formatDate}}
+									</p>
+								</div>
+								<!-- <form>
+									<div >
+									 <input type="text" class="form-control col-md-9 offset-md-1 box-content" readonly="readonly"
+											id="exampleFormControlInput1" placeholder="name@example.com" v-bind:value="note.descri"/>
+									</div>
+								</form> -->
+								<div
+									class="text-nowrap bd-highlight box-content offset-md-1 col-md-9"
+									style="width: 50rem;">{{note.descri}}</div>
+								<div>
+									<span class=" col-md-5">共{{note.pageview}}页</span><span
+										class="col-md-5">类型：{{note.tid}}</span>
+										<button type="button" class="btn btn-link btn-sm col-md-1">修改</button>
+										<button type="button" class="btn btn-link btn-sm col-md-1">删除</button>
+								</div>
+							</div>
+						</div>
+						<!-- 分页 -->
+						<nav aria-label="Page navigation example" class="col-md-12 m-3" >
+							<ul class="pagination  justify-content-center">
+								<li class="disabled" v-if="notes.first"><a
+									href="javascript:void(0)" class="page-link">&laquo;</a></li>
+								<li class="page-item" v-else><a class="page-link" href="#"
+									v-on:click.prevent="onPageLinkClick">
+										&laquo;
+								</a></li>
+
+								<li class="page-item" v-for="pi in notes.totalPages"
+									v-bind:class="pi==notes.number+1?'page-item active' :'page-item'"><a
+									v-bind:href="'getNotes?pageNum='+pi " class="page-link"
+									v-on:click.prevent="onPageLinkClick">{{pi}}</a></li>
+
+								<li class="disabled" v-if="notes.last"><a
+									href="javascript:void(0)" class="page-link">&raquo;</a></li>
+								<li class="page-item" v-else><a class="page-link" href="#"
+									v-on:click.prevent="onPageLinkClick">
+										&raquo;
+								</a></li>
+							</ul>
+						</nav>
+
+					</div>
+					<!-- 主体结束 -->
+				</div>
+				<div class="col-md-12" style=" padding: 0px">
+					<div class="alert alert-secondary text-center">
+						<span>网站底部</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript"
+		src="resources/bower_components/jquery/dist/jquery.slim.js"></script>
+	<script type="text/javascript"
+		src="resources/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<script type="text/javascript"
+		src="resources/bower_components/axios/dist/axios.js">
+	</script>
+	<script type="text/javascript"
+		src="resources/bower_components/vue/dist/vue.js">
+	</script>
+	<script type="text/javascript">
+	//百度的让时间按照固定格式显示的函数
+    var padDate=function(va){
+        va=va<10?'0'+va:va;
+        return va
+   }
+	var pageNum;
+	//var pages;
+	var vue = new Vue({
+		el:"#notelist",
+		data:{
+			notes:{},
+			id:-1
+		},
+		methods:{//页面初始化用来拿数据的函数
+			getData:function(){
+				axios.post("getNotes?").then(function(response){//+$("#serchFrm").serialize()
+				if(response.data){
+					//console.dir(response.data);
+					vue.notes=response.data.notes;
+					//获取当前页（页码从0 开始，因此要加1）
+					pageNum=response.data.notes.number+1;
+				}
+				}).catch(function(error){});
+			},
+			onSubmit:function(){
+			booklist.getData();
+			},
+			//当点击页码的时候调用该函数发送ajax请求去拿数据
+			/**页码函数*/
+				onPageLinkClick:function(evt){
+				console.log(evt);
+				if($(evt.target).text()=="\n\t\t\t\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t\t"){
+					axios.post("getNotes?pageNum="+(pageNum+1)).then(function(response){//+$("#serchFrm").serialize()
+						if(response.data){
+							//console.dir(response.data);
+							vue.notes=response.data.notes;
+							//获取当前页（页码从0 开始，因此要加1）
+							pageNum=response.data.notes.number+1;
+						}
+						}).catch(function(error){});
+				}else if($(evt.target).text()=="\n\t\t\t\t\t\t\t\t\t\t«\n\t\t\t\t\t\t\t\t"){
+					axios.post("getNotes?pageNum="+(pageNum-1)).then(function(response){//+$("#serchFrm").serialize()
+						if(response.data){
+							//console.dir(response.data);
+							vue.notes=response.data.notes;
+							//获取当前页（页码从0 开始，因此要加1）
+							pageNum=response.data.notes.number+1;
+						}
+						}).catch(function(error){});
+
+				}else{
+					axios.post("getNotes?pageNum="+$(evt.target).text()).then(function(response){//+$("#serchFrm").serialize()
+						if(response.data){
+							//console.dir(response.data);
+							vue.notes=response.data.notes;
+							//获取当前页（页码从0 开始，因此要加1）
+							pageNum=response.data.notes.number;
+						}
+						}).catch(function(error){});
+				}
+			}
+			/*函数结束--*/
+		},
+		/*过滤器用来过滤时间用的让时间按照固定的格式显示*/
+	     filters:{
+	         formatDate:function (val) {
+	             var value=new Date(val);
+	             var year=value.getFullYear();
+	             var month=padDate(value.getMonth()+1);
+	             var day=padDate(value.getDate());
+	             var hour=padDate(value.getHours());
+	             var minutes=padDate(value.getMinutes());
+	             var seconds=padDate(value.getSeconds());
+	             return year+'-'+month+'-'+day+' '+hour+':'+minutes+':'+seconds;
+	  
+	         }
+	     }
+	});
+	vue.getData();
+	</script>
+</body>
+</html>
