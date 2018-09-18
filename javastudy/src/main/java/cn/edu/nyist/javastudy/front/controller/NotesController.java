@@ -21,10 +21,10 @@ public class NotesController {
 	private NotesService notevice;
 	@RequestMapping("/getNotes")
 	//@ResponseBody
-	public Map<String, Object> getNotes(@RequestParam(name="pageNum",defaultValue="1") int pageNum,@RequestParam(required=false,defaultValue="-1") int uid){
+	public Map<String, Object> getNotes(@RequestParam(name="pageNo",defaultValue="1") int pageNo,@RequestParam(required=false,defaultValue="-1") int uid){
 		Note note =	notevice.findOne(1);
 		System.out.println(note+"-------------");
-		Page< Note> notes = notevice.getAllNotes(pageNum,uid);
+		Page< Note> notes = notevice.getAllNotes(pageNo,uid);
 		for (Note note1 : notes) {
 			System.out.println("所有数据"+note+"-----------");
 		}

@@ -30,16 +30,16 @@ public class Video implements Serializable {
 	private String descri;//视频描述
 	private Date pubdate;//视频发布时间
 	private int pageview;//视频浏览量
-	@Transient
+	//@Transient
 	private int uid;//用户id
-	@Transient
+//	@Transient
 	private int tid;//视频类型
-	@ManyToOne(targetEntity=Type.class)
-	@JoinColumn(name="tid")
-	private Type type;//创建关联
-	@ManyToOne(targetEntity=User.class)
-	@JoinColumn(name="uid")
-	private User user;//
+//	@ManyToOne(targetEntity=Type.class)
+//	@JoinColumn(name="tid")
+//	private Type type;//创建关联
+//	@ManyToOne(targetEntity=User.class)
+//	@JoinColumn(name="uid")
+//	private User user;//
 	public Video() {
 	}
 	public int getId() {
@@ -54,29 +54,11 @@ public class Video implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getnewname() {
-		return newname;
-	}
-	public void setnewname(String newname) {
-		this.newname = newname;
-	}
 	public String getDescri() {
 		return descri;
 	}
 	public void setDescri(String descri) {
 		this.descri = descri;
-	}
-	public Date getpubdate() {
-		return pubdate;
-	}
-	public void setpubdate(Date pubdate) {
-		this.pubdate = pubdate;
-	}
-	public int getpageview() {
-		return pageview;
-	}
-	public void setpageview(int pageview) {
-		this.pageview = pageview;
 	}
 	public String getNewname() {
 		return newname;
@@ -102,25 +84,17 @@ public class Video implements Serializable {
 	public void setTid(int tid) {
 		this.tid = tid;
 	}
-	public Type getType() {
-		return type;
-	}
-	public void setType(Type type) {
-		this.type = type;
-	}
+
 	public int getUid() {
 		return uid;
 	}
 	public void setUid(int uid) {
 		this.uid = uid;
 	}
-	public User getUser() {
-		return user;
+	@Override
+	public String toString() {
+		return "Video [id=" + id + ", name=" + name + ", newname=" + newname + ", descri=" + descri + ", pubdate="
+				+ pubdate + ", pageview=" + pageview + ", uid=" + uid + ", tid=" + tid + "]";
 	}
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
-
 	
 }

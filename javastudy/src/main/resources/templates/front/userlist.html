@@ -15,10 +15,10 @@
 </style>
 </head>
 <body>
-	<div class="container-fluid  ">
+	<div class="container-fluid" id="notelist">
 		<div class="row">
 			<div class="col-md-12" style="padding: 0px">
-		<!-- 这是导航栏部分 -->
+				<!-- 这是导航栏部分 -->
 				<!-- <div class="row"> -->
 				<div class="col-md-12" style="padding: 0PX">
 					<nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -74,16 +74,21 @@
 					<!-- </div> -->
 				</div>
 				<!--导航栏部分结束  -->
-				
-				
-				<div class="row m-3"><!--  style="border: 1px solid black" -->
-				<!-- 左侧菜单栏部分 -->
+
+
+				<div class="row m-3">
+					<!--  style="border: 1px solid black" -->
+					<!-- 左侧菜单栏部分 -->
 					<div class="col-md-2">
 						<div class="list-group">
 							<div class="alert alert-secondary" role="alert"
 								style="margin-bottom: 0px">与我相关</div>
-							<div class="list-group-item">我的笔记</div>
-							<div class="list-group-item">我的视频</div>
+							<div class="list-group-item"  onclick="getData('note')">
+								<a href="#" v-on:click.prevent="">我的笔记</a>
+							</div>
+							<div class="list-group-item" onclick="getData('video')">
+								<a href="#" v-on:click.prevent="">我的视频</a>
+							</div>
 							<div class="list-group-item justify-content-between">我的文章</div>
 							<div class="list-group-item justify-content-between">我的资料</div>
 							<div class="list-group-item justify-content-between">.....</div>
@@ -97,13 +102,13 @@
 					</div>
 					<!-- 结束 -->
 					<!-- 中间内容显示部分 -->
-					<div class="col-md-10"
-						id="notelist">
+					<div class="col-md-10" v-if="notesorvideos.totalElements>0">
 						<div class="alert alert-secondary" style="margin-bottom: 0px">
-							<span>我的笔记</span>
+							<span v-if="contex=='getNotesData'">我的笔记</span> <span v-else>我的视频</span>
 						</div>
-						<div ><!-- style="border-bottom:1px solid black; -->
-							<div v-for="note in notes.content"
+						<div>
+							<!-- style="border-bottom:1px solid black; -->
+							<div v-for="note in notesorvideos.content"
 								class="container-fluid  bg-light m-1 border-bottom">
 								<div class="container-fluid">
 									<p style="margin-bottom: 0px">
@@ -122,39 +127,116 @@
 								<div>
 									<span class=" col-md-5">共{{note.pageview}}页</span><span
 										class="col-md-5">类型：{{note.tid}}</span>
-										<button type="button" class="btn btn-link btn-sm col-md-1">修改</button>
-										<button type="button" class="btn btn-link btn-sm col-md-1">删除</button>
+									<button type="button" class="btn btn-link btn-sm col-md-1">修改</button>
+									<button type="button" class="btn btn-link btn-sm col-md-1">删除</button>
 								</div>
 							</div>
 						</div>
-						<!-- 分页 -->
-						<nav aria-label="Page navigation example" class="col-md-12 m-3" >
-							<ul class="pagination  justify-content-center">
-								<li class="disabled" v-if="notes.first"><a
-									href="javascript:void(0)" class="page-link">&laquo;</a></li>
-								<li class="page-item" v-else><a class="page-link" href="#"
-									v-on:click.prevent="onPageLinkClick">
-										&laquo;
-								</a></li>
-
-								<li class="page-item" v-for="pi in notes.totalPages"
-									v-bind:class="pi==notes.number+1?'page-item active' :'page-item'"><a
-									v-bind:href="'getNotes?pageNum='+pi " class="page-link"
-									v-on:click.prevent="onPageLinkClick">{{pi}}</a></li>
-
-								<li class="disabled" v-if="notes.last"><a
-									href="javascript:void(0)" class="page-link">&raquo;</a></li>
-								<li class="page-item" v-else><a class="page-link" href="#"
-									v-on:click.prevent="onPageLinkClick">
-										&raquo;
-								</a></li>
+						<!-- 分页开始 -->
+						<nav aria-label="Page navigation example" class="col-md-12"
+							style="margin-top: 5px;">
+							<ul class="pagination">
+								<!-- 前一页 -->
+								<li class="page-item disable" v-if="pages.first"><a
+									class="page-link" href="javascript:void(0)">&laquo;</a></li>
+								<li class="page-item" v-if="!pages.first"><a
+									class="page-link" v-on:click="getData1(pages.number+1-1)">&laquo;</a>
+								</li>
+								<!-- 最多显示5个链接 -->
+								<!-- 小于5页开始 -->
+								<li v-for="pi in pages.totalPages"
+									v-bind:class="pi==pages.number+1?'active page-item':'page-item myLi'"
+									v-if="pages.totalPages<=5"><a class="page-link"
+									v-on:click="getData1(pi)">{{pi}}</a></li>
+								<!-- 小于5页结束 -->
+								<!-- 总页数大于5页，当前页小于3页 -->
+								<li
+									v-bind:class="1==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1<=3"><a
+									class="page-link" v-on:click="getData1(1)">1</a></li>
+								<li
+									v-bind:class="2==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1<=3"><a
+									class="page-link" v-on:click="getData1(2)">2</a></li>
+								<li
+									v-bind:class="3==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1<=3"><a
+									class="page-link" v-on:click="getData1(3)">3</a></li>
+								<li
+									v-bind:class="4==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1<=3"><a
+									class="page-link" v-on:click="getData1(4)">4</a></li>
+								<li
+									v-bind:class="pages.totalPages==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1<=3"><a
+									class="page-link" v-on:click="getData1(pages.totalPages)">..{{pages.totalPages}}</a>
+								</li>
+								<!-- 大于5页结束 -->
+								<!-- 大于5页，当前页大于三页且当前页小于总页数-2 -->
+								<li
+									v-bind:class="1==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1<=pages.totalPages-3 && pages.number+1>3">
+									<a class="page-link" v-on:click="getData1(1)">1..</a>
+								</li>
+								<li
+									v-bind:class="pages.number+1-1==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1<=pages.totalPages-3 && pages.number+1>3">
+									<a class="page-link" v-on:click="getData1(pages.number+1-1)">{{pages.number+1-1}}</a>
+								</li>
+								<li
+									v-bind:class="pages.number+1==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1<=pages.totalPages-3 && pages.number+1>3">
+									<a class="page-link" v-on:click="getData1(pages.number+1)">{{pages.number+1}}</a>
+								</li>
+								<li
+									v-bind:class="pages.number+1+1==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1<=pages.totalPages-3 && pages.number+1>3">
+									<a class="page-link" v-on:click="getData1(pages.number+1+1)">{{pages.number+1+1}}</a>
+								</li>
+								<li
+									v-bind:class="pages.totalPages==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1<=pages.totalPages-3 && pages.number+1>3">
+									<a class="page-link" v-on:click="getData1(pages.totalPages)">..{{pages.totalPages}}</a>
+								</li>
+								<!-- 大于5页，当前页大于三页 -->
+								<li
+									v-bind:class="1==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1>pages.totalPages-3 && pages.number+1>=3">
+									<a class="page-link" v-on:click="getData1(1)">1..</a>
+								</li>
+								<li
+									v-bind:class="pages.totalPages-3==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1>pages.totalPages-3 && pages.number+1>=3">
+									<a class="page-link" v-on:click="getData1(pages.totalPages-3)">{{pages.totalPages-3}}</a>
+								</li>
+								<li
+									v-bind:class="pages.totalPages-2==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1>pages.totalPages-3 && pages.number+1>=3">
+									<a class="page-link" v-on:click="getData1(pages.totalPages-2)">{{pages.totalPages-2}}</a>
+								</li>
+								<li
+									v-bind:class="pages.totalPages-1==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1>pages.totalPages-3 && pages.number+1>=3">
+									<a class="page-link" v-on:click="getData1(pages.totalPages-1)">{{pages.totalPages-1}}</a>
+								</li>
+								<li
+									v-bind:class="pages.totalPages==pages.number+1?'active page-item':'page-item'"
+									v-if="pages.totalPages>5 && pages.number+1>pages.totalPages-3 && pages.number+1>=3">
+									<a class="page-link" v-on:click="getData1(pages.totalPages)">{{pages.totalPages}}</a>
+								</li>
+								<!-- 后一页 -->
+								<li class="disabled" v-if="pages.last"><a class="page-link"
+									href="javascript:void(0)">&raquo;</a></li>
+								<li class="page-item" v-if="!pages.last"><a
+									class="page-link" v-on:click="getData1(pages.number+1+1)">&raquo;</a>
+								</li>
 							</ul>
 						</nav>
-
+						<!-- 分页结束 -->
 					</div>
 					<!-- 主体结束 -->
 				</div>
-				<div class="col-md-12" style=" padding: 0px">
+				<div class="col-md-12" style="padding: 0px">
 					<div class="alert alert-secondary text-center">
 						<span>网站底部</span>
 					</div>
@@ -172,86 +254,116 @@
 	<script type="text/javascript"
 		src="resources/bower_components/vue/dist/vue.js">
 	</script>
-	<script type="text/javascript">
+	<!-- 这是搞js实现往cookie中存值用的 -->
+	<script type="text/javascript"
+		src="resources/bower_components/jquery-cookie/jquery.cookie.js">
+	</script>
+	<script type="text/javascript" th:inline="text">
 	//百度的让时间按照固定格式显示的函数
     var padDate=function(va){
         va=va<10?'0'+va:va;
         return va
    }
-	var pageNum;
+    var hrefVal="getNotes";
 	//var pages;
 	var vue = new Vue({
 		el:"#notelist",
 		data:{
-			notes:{},
+			notesorvideos:{},
+			pages:{},
+			contex:"",
 			id:-1
 		},
 		methods:{//页面初始化用来拿数据的函数
-			getData:function(){
-				axios.post("getNotes?").then(function(response){//+$("#serchFrm").serialize()
+			getNotesData:function(pageNo){
+				hrefVal="getNotes";
+				axios.post("getNotes?"+"pageNo="+pageNo).then(function(response){//+$("#serchFrm").serialize()
+				vue.contex = 'getNotesData';
 				if(response.data){
-					//console.dir(response.data);
-					vue.notes=response.data.notes;
-					//获取当前页（页码从0 开始，因此要加1）
-					pageNum=response.data.notes.number+1;
+					vue.notesorvideos=response.data.notes;
+					vue.pages=response.data.notes;
 				}
+				$.cookie('functio', 'getNotesData', { expires: 7 ,path:'/'});		
 				}).catch(function(error){});
 			},
-			onSubmit:function(){
-			booklist.getData();
+			getVideosData:function(pageNo){
+				hrefVal="getVideos";
+				axios.post("getVideos?"+"pageNo="+pageNo).then(function(response){
+				vue.contex = 'getVideosData';
+				if(response.data){
+					vue.notesorvideos=response.data.videos;
+					vue.pages=response.data.videos;
+				}
+				$.cookie('functio', 'getVideosData', { expires: 7 ,path:'/'});
+			
+				}).catch(function(){error});
 			},
-			//当点击页码的时候调用该函数发送ajax请求去拿数据
-			/**页码函数*/
-				onPageLinkClick:function(evt){
-				console.log(evt);
-				if($(evt.target).text()=="\n\t\t\t\t\t\t\t\t\t\t»\n\t\t\t\t\t\t\t\t"){
-					axios.post("getNotes?pageNum="+(pageNum+1)).then(function(response){//+$("#serchFrm").serialize()
-						if(response.data){
-							//console.dir(response.data);
-							vue.notes=response.data.notes;
-							//获取当前页（页码从0 开始，因此要加1）
-							pageNum=response.data.notes.number+1;
-						}
-						}).catch(function(error){});
-				}else if($(evt.target).text()=="\n\t\t\t\t\t\t\t\t\t\t«\n\t\t\t\t\t\t\t\t"){
-					axios.post("getNotes?pageNum="+(pageNum-1)).then(function(response){//+$("#serchFrm").serialize()
-						if(response.data){
-							//console.dir(response.data);
-							vue.notes=response.data.notes;
-							//获取当前页（页码从0 开始，因此要加1）
-							pageNum=response.data.notes.number+1;
-						}
-						}).catch(function(error){});
-
-				}else{
-					axios.post("getNotes?pageNum="+$(evt.target).text()).then(function(response){//+$("#serchFrm").serialize()
-						if(response.data){
-							//console.dir(response.data);
-							vue.notes=response.data.notes;
-							//获取当前页（页码从0 开始，因此要加1）
-							pageNum=response.data.notes.number;
-						}
-						}).catch(function(error){});
+			getData1:function(pageNo){
+				if(hrefVal=='getNotes'){
+					vue.getNotesData(pageNo);
+				}else if(hrefVal=='getVideos'){
+					vue.getVideosData(pageNo);
+				}else if(hrefVal=='getVideos'){
+					vue.getErrorsData(pageNo);
 				}
 			}
-			/*函数结束--*/
+			///onSubmit:function(){
+			//booklist.getData();
+			//},
+
 		},
 		/*过滤器用来过滤时间用的让时间按照固定的格式显示*/
-	     filters:{
-	         formatDate:function (val) {
-	             var value=new Date(val);
-	             var year=value.getFullYear();
-	             var month=padDate(value.getMonth()+1);
-	             var day=padDate(value.getDate());
-	             var hour=padDate(value.getHours());
-	             var minutes=padDate(value.getMinutes());
-	             var seconds=padDate(value.getSeconds());
-	             return year+'-'+month+'-'+day+' '+hour+':'+minutes+':'+seconds;
-	  
+	   filters:{
+	       formatDate:function (val) {
+	          var value=new Date(val);
+	          var year=value.getFullYear();
+	          var month=padDate(value.getMonth()+1);
+	          var day=padDate(value.getDate());
+	          var hour=padDate(value.getHours());
+	          var minutes=padDate(value.getMinutes());
+	          var seconds=padDate(value.getSeconds());
+	          return year+'-'+month+'-'+day+' '+hour+':'+minutes+':'+seconds;
 	         }
 	     }
+		 /*过滤器结束*/
 	});
-	vue.getData();
+	//html加载完毕，选择调用哪个方法
+	//往cookie存，保证刷新时不会变
+	window.onload=function(){
+		
+		if(vue.contex=='getNotesData'){
+			vue.getNotesData(1);
+			$.cookie('functio', 'getNotesData', { expires: 7 ,path:'/'});
+		}else if(vue.contex=='getVideosData'){
+			vue.getVideosData(1);
+			$.cookie('functio', 'getVideosData', { expires: 7 ,path:'/'});
+		}
+		else{
+			vue.getNotesData(1);
+			$.cookie('functio', 'getNotesData', { expires: 7 ,path:'/'});
+		}
+	}
+	function getData(type){
+		if(type=="note"){
+			vue.getNotesData(1);
+		}else if(type=="video"){
+			vue.getVideosData(1);
+		}else if(type=="error"){
+			vue.getErrorsData(1);
+		}
+	}
+	function getData1(pageNo){
+		if(hrefVal=='getNotes'){
+			vue.getNotesData(pageNo);
+		}else if(hrefVal=='getVideos'){
+			vue.getVideosData(pageNo);
+		}else if(hrefVal=='getVideos'){
+			vue.getErrorsData(pageNo);
+		}
+	}
+	(function(){
+		vue.contex = $.cookie('functio');
+	})()
 	</script>
 </body>
 </html>

@@ -5,16 +5,19 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import cn.edu.nyist.javastudy.common.model.Video;
 import cn.edu.nyist.javastudy.front.Repostory.VideoRepostory;
 import cn.edu.nyist.javastudy.front.service.VideoService;
-
+@Service
 public class VideoServiceImpl implements VideoService {
+	@Autowired
 	private VideoRepostory videoRepostory;
 	@Override
 	public Page<Video> getVideos(int pageNum,int uid) {

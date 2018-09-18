@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.edu.nyist.javastudy.common.model.Video;
 import cn.edu.nyist.javastudy.front.service.VideoService;
@@ -15,9 +17,13 @@ import cn.edu.nyist.javastudy.front.service.VideoService;
 public class VideoController {
 	@Autowired
 	private VideoService videoService;
-	@RequestMapping("/getVedios")
-	public Map<String, Object> getAllVideos() {
-		Page<Video> videos = videoService.getVideos(1,1);
+	@ResponseBody
+	@RequestMapping("/getVideos")
+	public Map<String, Object> getAllVideos(@RequestParam(name="pageNo",defaultValue="1") int pageNo) {
+		Page<Video> videos = videoService.getVideos(pageNo,1);
+		for (Video video : videos) {
+			System.out.println(video);
+		}
 		Map<String, Object> map =  new HashMap<>();
 		map.put("videos", videos);
 		return map;
