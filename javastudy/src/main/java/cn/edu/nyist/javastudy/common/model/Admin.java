@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
- *   
+ *   s
  * @author 杨小治
  * @date 2018年9月15日 下午6:31:52
  * @contact QQ:1360365886
