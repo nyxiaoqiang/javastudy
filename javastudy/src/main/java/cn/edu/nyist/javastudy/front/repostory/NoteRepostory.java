@@ -1,4 +1,4 @@
-package cn.edu.nyist.javastudy.front.Repostory;
+package cn.edu.nyist.javastudy.front.repostory;
 
 import java.util.List;
 

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>登陆</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link
+	href="resources/bower_components/bootstrap/dist/css/bootstrap.min.css"
+	rel="stylesheet" type="text/css" />
+	<link href="resources/bower_components/icon/login/style.css" rel="stylesheet" type="text/css"/>
+<style type="text/css">
+.login-center{
+	height: 100vh;
+	}
+/* 调整container高度和宽度 */
+.hezi {
+	margin-top: 280px;
+	width: 25%;
+}
+/* 输入框未聚焦颜色改为半透明 */
+.harftransparent {
+	background-color: rgba(255, 255, 255, 0.3);
+}
+/* 输入框聚焦时颜色改为半透明 */
+.harftransparent:focus {
+	background-color: rgba(255, 255, 255, 0.3);
+}
+/* 让图片铺满整个浏览器 */
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	overflow: hidden;
+	font-family: "微软雅黑";
+	margin: 0;
+	padding: 0;
+	position: relative;
+	width: auto;
+	height: auto;
+	background: url("/resources/img/background2.jpg") no-repeat;
+	background-position: center;
+	background-size: 100%;
+}
+</style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div
+			class="row login-center align-items-center justify-content-center ">
+			<div class=" card border-secondary" style="padding: 20px">
+				<div th:if="${msg ne null}">
+					<div class="alert alert-primary" role="alert" th:inline="text">[[${msg}]]</div>
+				</div>
+				<form action="admin/login" method="post">
+					<div class="input-group col-md-10 offset-md-1 m-3">
+						<div class="input-group-prepend">
+							<span class="input-group-text icon-user harftransparent"
+								id="basic-addon1"></span>
+						</div>
+						<input name="name" type="text"
+							class="harftransparent form-control" id="inputName"
+							placeholder="用户名" th:value="${param.name!=null?param.name[0]:''}" />
+					</div>
+					<div class="input-group col-md-10 offset-md-1 m-3">
+						<div class="input-group-prepend">
+							<span class="input-group-text icon-lock harftransparent"
+								id="basic-addon1"></span>
+						</div>
+						<input name="pwd" type="password"
+							class="harftransparent form-control" id="inputPassword3"
+							placeholder="密码" />
+					</div>
+					<div class="form-group row m-3">
+						<div class="col-md-5">
+							<!-- 最大输入四个字符maxlength -->
+							<input name="vcode" type="text"
+								class="harftransparent form-control" maxlength="4"
+								id="inputVcode" placeholder="验证码" />
+						</div>
+						<div class="col-md-5" style="padding: 0px">
+							<img class="vcodeImg" title="点击换图片" src="vcode.png" />
+						</div>
+					</div>
+
+					<div class="form-group row">
+						<div class="col-sm-2 offset-md-8">
+							<button type="submit" class="btn btn-primary">登陆</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript"
+		src="resources/bower_components/jquery/dist/jquery.min.js">
+	</script>
+	<script type="text/javascript"
+		src="resources/bower_components/bootstrap/dist/js/bootstrap.min.js">
+	</script>
+	<script type="text/javascript">
+        $(function(){
+        	$('.col-sm-5 .vcodeImg').click(function(){
+				/*点击图片换新的验证码图片，“.col-sm-5”选中这个div，“img”表示这个div下的img标签，
+				“img.vcodeImg”选中这个div下的img标签的class为vcodeImg，将它的src属性更换为新值
+				“attr("src","vcode.png?t="+Math.random())”，更换src的属性值
+				*/
+					$(".col-sm-5 img.vcodeImg").attr("src","vcode.png?t="+Math.random());
+				});
+            });
+	</script>
+</body>
+</html>

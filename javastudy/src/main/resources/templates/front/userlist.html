@@ -21,7 +21,7 @@
 				<!-- 这是导航栏部分 -->
 				<!-- <div class="row"> -->
 				<div class="col-md-12" style="padding: 0PX">
-					<nav class="navbar navbar-expand-lg navbar-light bg-light">
+					<nav class="navbar navbar-expand-lg navbar-light" style="background-color: black">
 						<button class="navbar-toggler" type="button"
 							data-toggle="collapse"
 							data-target="#bs-example-navbar-collapse-1">
@@ -54,10 +54,11 @@
 								<button class="btn btn-primary my-2 my-sm-0" type="submit">
 									Search</button>
 							</form>
+							
 							<ul class="navbar-nav ml-md-auto">
-								<li class="nav-item active"><a class="nav-link" href="#">Link
-										<span class="sr-only">(current)</span>
+								<li class="nav-item active"><a class="nav-link" href="#"><img class="rounded-circle" height="50px" width="50px" src="resources/person.jpeg" alt="头像"/>  
 								</a></li>
+								
 								<li class="nav-item dropdown"><a
 									class="nav-link dropdown-toggle" href="http://example.com"
 									id="navbarDropdownMenuLink" data-toggle="dropdown">**用户</a>
@@ -83,11 +84,14 @@
 						<div class="list-group">
 							<div class="alert alert-secondary" role="alert"
 								style="margin-bottom: 0px">与我相关</div>
-							<div class="list-group-item"  onclick="getData('note')">
+							<div class="list-group-item" onclick="getData('note')">
 								<a href="#" v-on:click.prevent="">我的笔记</a>
 							</div>
 							<div class="list-group-item" onclick="getData('video')">
 								<a href="#" v-on:click.prevent="">我的视频</a>
+							</div>
+							<div class="list-group-item" onclick="getData('error')">
+								<a href="#" v-on:click.prevent="">错误相关</a>
 							</div>
 							<div class="list-group-item justify-content-between">我的文章</div>
 							<div class="list-group-item justify-content-between">我的资料</div>
@@ -102,12 +106,11 @@
 					</div>
 					<!-- 结束 -->
 					<!-- 中间内容显示部分 -->
-					<div class="col-md-10" v-if="notesorvideos.totalElements>0">
+					<div class="col-md-10" v-if="pages.totalElements>0">
 						<div class="alert alert-secondary" style="margin-bottom: 0px">
-							<span v-if="contex=='getNotesData'">我的笔记</span> <span v-else>我的视频</span>
+							<span v-if="contex=='getNotesData'">我的笔记</span> <span v-else-if="contex=='getVideosData'">我的视频</span><span v-else-if="contex=='getErrorsData'">错误相关</span>
 						</div>
-						<div>
-							<!-- style="border-bottom:1px solid black; -->
+						<div  v-if="notesorvideos.totalElements>0">
 							<div v-for="note in notesorvideos.content"
 								class="container-fluid  bg-light m-1 border-bottom">
 								<div class="container-fluid">
@@ -115,12 +118,6 @@
 										<u style="margin-right: 20px"><a href="#">{{note.name}}</a></u>{{note.pubdate|formatDate}}
 									</p>
 								</div>
-								<!-- <form>
-									<div >
-									 <input type="text" class="form-control col-md-9 offset-md-1 box-content" readonly="readonly"
-											id="exampleFormControlInput1" placeholder="name@example.com" v-bind:value="note.descri"/>
-									</div>
-								</form> -->
 								<div
 									class="text-nowrap bd-highlight box-content offset-md-1 col-md-9"
 									style="width: 50rem;">{{note.descri}}</div>
@@ -132,6 +129,26 @@
 								</div>
 							</div>
 						</div>
+						<!--错误显示部分相关-->
+						<div  v-if="errors.totalElements>0">
+							<div v-for="error in errors.content"
+								class="container-fluid  bg-light m-1 border-bottom">
+								<div class="container-fluid">
+									<p style="margin-bottom: 0px">
+										<u style="margin-right: 20px"><a href="#">{{error.name}}</a></u>
+									</p>
+								</div>
+								<div
+									class="text-nowrap bd-highlight box-content offset-md-1 col-md-9"
+									style="width: 50rem;">{{error.descri}}</div>
+								<div>
+									<span class="col-md-5">类型：{{error.tid}}</span>
+									<button type="button" class="btn btn-link btn-sm col-md-1">修改</button>
+									<button type="button" class="btn btn-link btn-sm col-md-1">删除</button>
+								</div>
+							</div>
+						</div>
+						<!--错误显示结束-->
 						<!-- 分页开始 -->
 						<nav aria-label="Page navigation example" class="col-md-12"
 							style="margin-top: 5px;">
@@ -272,6 +289,7 @@
 			notesorvideos:{},
 			pages:{},
 			contex:"",
+			errors:{},
 			id:-1
 		},
 		methods:{//页面初始化用来拿数据的函数
@@ -279,6 +297,7 @@
 				hrefVal="getNotes";
 				axios.post("getNotes?"+"pageNo="+pageNo).then(function(response){//+$("#serchFrm").serialize()
 				vue.contex = 'getNotesData';
+				vue.errors={};//清空errors,否则他也会显示
 				if(response.data){
 					vue.notesorvideos=response.data.notes;
 					vue.pages=response.data.notes;
@@ -290,6 +309,7 @@
 				hrefVal="getVideos";
 				axios.post("getVideos?"+"pageNo="+pageNo).then(function(response){
 				vue.contex = 'getVideosData';
+				vue.errors={};//清空errors,否则他也会显示
 				if(response.data){
 					vue.notesorvideos=response.data.videos;
 					vue.pages=response.data.videos;
@@ -297,6 +317,20 @@
 				$.cookie('functio', 'getVideosData', { expires: 7 ,path:'/'});
 			
 				}).catch(function(){error});
+			},
+			getErrorsData:function(pageNo){
+				hrefVal="getErrors";
+				axios.post("getErrors?"+"pageNo="+pageNo).then(function(response){
+				vue.contex = 'getErrorsData';
+				vue.notesorvideos={};//把notesorvideos清空
+				if(response.data){
+					vue.errors=response.data.errors;
+					vue.pages=response.data.errors;
+				}
+				$.cookie('functio', 'getErrorsData', { expires: 7 ,path:'/'});
+			
+				}).catch(function(){error});
+
 			},
 			getData1:function(pageNo){
 				if(hrefVal=='getNotes'){
@@ -337,6 +371,9 @@
 		}else if(vue.contex=='getVideosData'){
 			vue.getVideosData(1);
 			$.cookie('functio', 'getVideosData', { expires: 7 ,path:'/'});
+		}else if(vue.contex=='getErrorsData'){
+			vue.getErrorsData(1);
+			$.cookie('functio', 'getErrorsData', { expires: 7 ,path:'/'});
 		}
 		else{
 			vue.getNotesData(1);
@@ -357,7 +394,7 @@
 			vue.getNotesData(pageNo);
 		}else if(hrefVal=='getVideos'){
 			vue.getVideosData(pageNo);
-		}else if(hrefVal=='getVideos'){
+		}else if(hrefVal=='getErrors'){
 			vue.getErrorsData(pageNo);
 		}
 	}

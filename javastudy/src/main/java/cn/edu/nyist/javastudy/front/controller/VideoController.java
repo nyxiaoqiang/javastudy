@@ -19,7 +19,7 @@ public class VideoController {
 	private VideoService videoService;
 	@ResponseBody
 	@RequestMapping("/getVideos")
-	public Map<String, Object> getAllVideos(@RequestParam(name="pageNo",defaultValue="1") int pageNo) {
+	public Map<String, Object> getAllVideos(@RequestParam(name="pageNo",defaultValue="1") int pageNo,@RequestParam(name="uid",required=false)int uid) {
 		Page<Video> videos = videoService.getVideos(pageNo,1);
 		for (Video video : videos) {
 			System.out.println(video);

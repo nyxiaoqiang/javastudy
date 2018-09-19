@@ -8,6 +8,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import cn.edu.nyist.javastudy.common.model.Note;
-import cn.edu.nyist.javastudy.front.Repostory.NoteRepostory;
+import cn.edu.nyist.javastudy.common.pageinfo.PageContent;
+import cn.edu.nyist.javastudy.front.repostory.NoteRepostory;
 import cn.edu.nyist.javastudy.front.service.NotesService;
 @Service
 public class NotesServiceImpl implements NotesService{
@@ -26,7 +28,8 @@ public class NotesServiceImpl implements NotesService{
 	@Override
 
 	public Page<Note> getAllNotes(int pageNum,int uid){
-		Pageable pageable = new PageRequest(pageNum-1, 3);
+	
+		Pageable pageable = new PageRequest(pageNum-1, PageContent.PAGE_SIZE);
 		Specification<Note> spec = new Specification<Note>() {
 			@Override
 			public Predicate toPredicate(Root<Note> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {

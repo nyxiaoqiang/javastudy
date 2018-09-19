@@ -12,20 +12,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import cn.edu.nyist.javastudy.common.model.Video;
+import cn.edu.nyist.javastudy.common.model.Error;
 import cn.edu.nyist.javastudy.common.pageinfo.PageContent;
-import cn.edu.nyist.javastudy.front.repostory.VideoRepostory;
-import cn.edu.nyist.javastudy.front.service.VideoService;
+import cn.edu.nyist.javastudy.front.repostory.ErrorRepostory;
+import cn.edu.nyist.javastudy.front.service.ErrorService;
 @Service
-public class VideoServiceImpl implements VideoService {
+public class ErrorServiceImpl implements ErrorService {
 	@Autowired
-	private VideoRepostory videoRepostory;
+	private ErrorRepostory errorRepostory;
 	@Override
-	public Page<Video> getVideos(int pageNum,int uid) {
-		Pageable pageable = new PageRequest(pageNum-1,  PageContent.PAGE_SIZE);
-		Specification<Video> spec = new Specification<Video>() {
+	public Page<Error> getErrors(int pageNum, int uid) {
+		Pageable pageable = PageRequest.of(pageNum-1, PageContent.PAGE_SIZE);
+		Specification<Error> spec = new Specification<Error>() {
 			@Override
-			public Predicate toPredicate(Root<Video> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<Error> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
 				Predicate predicate =null;
 				if (uid!=-1) {
 					predicate = criteriaBuilder.equal(root.get("uid"), 1);
@@ -34,7 +34,6 @@ public class VideoServiceImpl implements VideoService {
 			}
 		};
 		//spec是条件限制，sort是分页
-		return videoRepostory.findAll(spec, pageable);
+		return errorRepostory.findAll(spec, pageable);
 	}
-
 }

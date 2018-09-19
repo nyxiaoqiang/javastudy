@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -21,7 +23,8 @@ public class NotesController {
 	private NotesService notevice;
 	@RequestMapping("/getNotes")
 	//@ResponseBody
-	public Map<String, Object> getNotes(@RequestParam(name="pageNo",defaultValue="1") int pageNo,@RequestParam(required=false,defaultValue="-1") int uid){
+	public Map<String, Object> getNotes(HttpServletRequest request,@RequestParam(name="pageNo",defaultValue="1") int pageNo,@RequestParam(required=false,defaultValue="-1") int uid){
+		request.getSession().setAttribute("admin", "sbbbbbbbbb");
 		Note note =	notevice.findOne(1);
 		System.out.println(note+"-------------");
 		Page< Note> notes = notevice.getAllNotes(pageNo,uid);
